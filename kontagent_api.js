@@ -14,9 +14,11 @@ function KontagentApi(apiKey, optionalParams) {
 	this._baseTestServerUrl = "http://test-server.kontagent.com/api/v1/";
 
 	this._apiKey = apiKey;
-	this._useTestServer = (optionalParams.useTestServer) ? optionalParams.useTestServer : false;
-	this._useHttps = (optionalParams.useHttps) ? optionalParams.useHttps : false;
-	this._validateParams = (optionalParams.validateParams) ? optionalParams.validateParams : false;
+    if (optionalParams != null && typeof optionalParams != 'undefined') {
+        this._useTestServer = (optionalParams.useTestServer) ? optionalParams.useTestServer : false;
+        this._useHttps = (optionalParams.useHttps) ? optionalParams.useHttps : false;
+        this._validateParams = (optionalParams.validateParams) ? optionalParams.validateParams : false;
+    }
 }
 
 /*
@@ -32,10 +34,9 @@ KontagentApi.prototype._sendHttpRequestViaImgTag = function(url, successCallback
 	// The onerror callback will always be triggered because no image header is returned by our API.
 	// Which is fine because the request would have still gone through.
 	if (successCallback) {
-		img.onerror = successallback;
+		img.onerror = successCallback;
 		img.onload = successCallback;
 	}
-	
 	img.src = url;
 }
 
@@ -73,7 +74,7 @@ KontagentApi.prototype._sendMessageViaImgTag = function(messageType, params, suc
 		}
 	}
 
-	this._sendHttpRequestViaImgTag(url);
+	this._sendHttpRequestViaImgTag(url, successCallback);
 }
 
 /*
@@ -87,11 +88,11 @@ KontagentApi.prototype._httpBuildQuery = function(data) {
 	var query, key, val;
 	var tmpArray = [];
 
-	for(key in data) {
+	for (key in data) {
 		val = encodeURIComponent(decodeURIComponent(data[key].toString()));
 		key = encodeURIComponent(decodeURIComponent(key));
 
-		tmpArray.push(key + "=" + val);  
+		tmpArray.push(key + "=" + val);
 	}
 
 	return tmpArray.join("&");
@@ -114,7 +115,7 @@ KontagentApi.prototype._s4 = function() {
 KontagentApi.prototype.genUniqueTrackingTag = function() {
 	var uniqueTrackingTag = "";
 	
-	for(i=0; i<4; i++) {
+	for (i=0; i<4; i++) {
 		uniqueTrackingTag += this._s4();
 	}
 	
@@ -129,7 +130,7 @@ KontagentApi.prototype.genUniqueTrackingTag = function() {
 KontagentApi.prototype.genShortUniqueTrackingTag = function() {
 	var shortUniqueTrackingTag = "";
 	
-	for(i=0; i<2; i++) {
+	for (i=0; i<2; i++) {
 		shortUniqueTrackingTag += this._s4();
 	}
 	
